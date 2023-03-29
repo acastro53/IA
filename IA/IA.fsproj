@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="pila.fs" />
+    <Compile Include="Cola.fs" />
+    <Compile Include="Busqueda.fs" />
+    <Compile Include="CostoUniforme.fs" />
+    <Compile Include="Greedy.fs" />
+    <Compile Include="AStar.fs" />
+    <Compile Include="BFS.fs" />
+    <Compile Include="DFS.fs" />
+    <Compile Include="DFSL.fs" />
+    <Compile Include="DFSLI.fs" />
+    <Compile Include="sudoku.fs" />
+    <Compile Include="OchoCasillas.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+</Project>
