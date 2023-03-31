@@ -11,7 +11,6 @@ type nodo<'s>=
         profundidad :int
         costo_ruta  :float
         estado      :'s
-        board       :'s
         padre       :option< nodo<'s> >
     }
 type estrategia<'s,'d>=
