@@ -14,7 +14,7 @@ type nodo<'s>=
         board       :'s
         padre       :option< nodo<'s> >
     }
-type estrategia<'s,'a ,'d>=
+type estrategia<'s,'d>=
     {
         vacia   : 'd //'d=bolsa la bolsa puede ser una lista o cola
         insertar: 'd -> nodo<'s>-> 'd //la bolsa recibe un nodo y escupe una bolsa con el nuevo nodo incertado

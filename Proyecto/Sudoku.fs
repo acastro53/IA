@@ -1,6 +1,5 @@
 namespace Busqueda
 module Sudoku=
-    
     //tipo de estado
     type estado=list<list<int>>
     //estado inicial del problema
@@ -13,28 +12,13 @@ module Sudoku=
                         [0;0;0;3;6;0;0;7;2];
                         [0;7;0;0;0;0;0;0;3];
                         [9;0;3;0;0;0;6;0;4]]
-    //estado meta o solucion del problema
-    let estado_meta=[[2;5;8;7;3;6;9;4;1];
-                      [6;1;9;8;2;4;3;5;7];
-                      [4;3;7;9;1;5;2;6;8];
-                      [3;9;5;2;7;1;4;8;6];
-                      [7;6;2;4;9;8;1;3;5];
-                      [8;4;1;6;5;3;7;2;9];
-                      [1;8;4;3;6;9;5;7;2];
-                      [5;7;6;1;4;2;8;9;3];
-                      [9;2;3;5;8;7;6;1;4]]
     //costo por accion que tiene el problema
-    let costo _ _ _=1.0
-    //identifica si se llego al estado meta
-    let meta estado=
-        List.map2(fun x y ->(x,y))
-            estado_meta estado
-        |> List.forall(fun(x,y)->x=y)
-    //encuentra un valor espesifico en el arreglo de estado
-    let cero estado=
-        List.findIndex(fun x->x=0) estado
-    
-    let generateSuccessors (node:nodo<estado>) =
+    let costo _=1.0
+    //identifica si se llego al estado meta retorna falos si se encuentra almenos un 0 y verdadero si no
+    let meta estado =
+        estado |> List.forall (fun lista -> not (List.contains 0 lista))
+
+    let generateSuccessors (node:estado) =
         let successors = ref []
         for row in 0..8 do
             for col in 0..8 do
