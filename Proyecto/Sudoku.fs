@@ -18,30 +18,42 @@ module Sudoku=
     let meta estado =
         estado |> List.forall (fun lista -> not (List.contains 0 lista))
 
-    let generateSuccessors (node:estado) =
-        let successors = ref []
-        for row in 0..8 do
-            for col in 0..8 do
-                if node.board.[row, col] = 0 then
-                    let possibleValues = 
-                        [1..9] |> List.filter (fun n -> not (Array.exists ((=) n) node.board.[row, ..] )) 
-                               |> List.filter (fun n -> not (Array.exists ((=) n) node.board.[.., col] )) 
-                               |> List.filter (fun n -> not (Array.exists ((=) n) (node.board.[(row/3)*3..(row/3)*3+2, (col/3)*3..(col/3)*3+2] |> Array.concat)))
-                    if possibleValues = [] then
-                        yield { node with board = Array.copy node.board }
-                    else
-                        let newNode = { node with board = Array.copy node.board; nextValue = (row, col, possibleValues) :: node.nextValue }
-                        for value in possibleValues do
-                            let newBoard = Array.copy node.board
-                            newBoard.[row, col] <- value
-                            successors := { board = newBoard; nextValue = [] } :: !successors
-                        yield newNode
-        yield! !successors
+    let sucesor (tablero:estado) =
+        // Busca la siguiente casilla vacía
+        let rec buscar_casilla_vacia fila columna =
+            if fila = 9 then None
+            elif List.nth (List.nth tablero fila) columna = 0 then Some (fila, columna)
+            elif columna = 8 then buscar_casilla_vacia (fila + 1) 0
+            else buscar_casilla_vacia fila (columna + 1)
+        // Encuentra los valores posibles para la casilla vacía
+        let valores_posibles fila columna =
+            let fila_valores = List.filter ((<>) 0) (List.nth tablero fila)
+            let columna_valores = List.filter ((<>) 0) (List.map (fun r -> List.nth r columna) tablero)
+            let caja_fila_inicio = (fila / 3) * 3
+            let caja_columna_inicio = (columna / 3) * 3
+            let caja_valores = List.filter ((<>) 0) [
+                List.nth (List.nth tablero (caja_fila_inicio + i)) (caja_columna_inicio + j)
+                for i in 0..2 for j in 0..2 ]
+            [1..9] |> List.filter (fun v -> not (List.contains v fila_valores || List.contains v columna_valores || List.contains v caja_valores))
+        // Crea un nodo hijo con un valor posible para la casilla vacía
+        let crear_nodo_hijo (fila, columna) valor =
+            let nuevo_tablero = 
+                List.mapi (fun i fila_valores -> 
+                    if i = fila then List.mapi (fun j v -> if j = columna then valor else v) fila_valores
+                    else fila_valores) tablero
+            nuevo_tablero
+        // Encuentra la siguiente casilla vacía y los valores posibles para esa casilla
+        match buscar_casilla_vacia 0 0 with
+        | None -> // No hay casillas vacías, por lo que no hay nodos sucesores
+            Seq.empty
+        | Some (fila, columna) -> // Crea un nodo hijo para cada valor posible en la casilla vacía
+            valores_posibles fila columna
+            |> Seq.map (crear_nodo_hijo (fila, columna))
 
     let problema estado=
             {
                 inicio      =estado
-                sucesores   =generateSuccessors
+                sucesores   =sucesor
                 meta        =meta
                 costo       =costo
             }
