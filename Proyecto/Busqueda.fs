@@ -1,5 +1,5 @@
 namespace Busqueda
-type problema<'s>= //'s estado 'a accion
+type problema<'s>= //'s estado
     {
         inicio      :'s
         sucesores   :'s->list<'s>
@@ -26,9 +26,8 @@ module Proyec=
                     {
                         profundidad =padre.profundidad
                         estado      =s
-                        board       =s
                         padre       =Some padre
-                        costo_ruta  =padre.costo_ruta
+                        costo_ruta  =padre.costo_ruta + costo
                     }
                 )
                 
@@ -38,7 +37,6 @@ module Proyec=
                 estado      =problema.inicio
                 profundidad =0
                 costo_ruta  =0
-                board       =problema.inicio
                 padre       =None
             }
 
