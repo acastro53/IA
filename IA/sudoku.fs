@@ -1,6 +1,399 @@
-namespace busqueda
 
+namespace busqueda
 module sudoku =
+    type accion =
+            | Uno
+            | Dos
+            | Tres
+            | Cuatro 
+            | Cinco
+            | Seis
+            | Siete
+            | Ocho 
+            | Nueve
+        type estado = list<list<int>>
+        let costo _ _ _ = 1.0
+        
+        let inicio =[[1;2;3; 4;5;6; 7;8;9];
+                    [1;2;3; 4;5;6; 7;8;9];
+                    [1;2;3; 4;5;6; 7;8;9];
+
+                    [1;2;3; 4;5;6; 7;8;9];
+                    [1;2;3; 4;0;6; 7;8;9];
+                    [1;2;3; 4;5;6; 7;8;9];
+
+                    [1;2;3; 4;5;6; 7;8;9];
+                    [1;2;3; 4;5;6; 7;8;9];
+                    [1;2;3; 4;5;6; 7;8;9];]
+
+
+   
+
+
+
+
+    let meta estado =
+            List.exists (fun subList -> List.exists ((=) 0) subList) estado
+
+
+
+
+    // funcion tiene Fila, verifica si esta en la lista
+    let Tienefila estado x n  = 
+        if not (List.contains x (List.item  (n) estado )) then
+            printfn "El número %d no está en la fila %d." x n
+            //false
+        else
+            printfn "El número %d está en la fila %d." x n 
+            //true
+    // funcion tiene fila con booleanos
+    let Tienefila2 estado x n  = 
+        if not (List.contains x (List.item  (n) estado )) then
+            false
+        else
+            printfn "El número %d está en la fila %d." x n 
+            true
+
+
+
+
+    // funcion tiene columna, verifica si esta en la columna
+    let Tienecolumna estado x n =
+        let transpuesta  = List.transpose estado   
+        if not (List.contains x (List.item  (n) transpuesta )) then
+            printfn "El número %d no está en la columna %d." x n
+            //false
+        else
+            printfn "El número %d está en la columna %d." x n 
+            //true
+    // funcion tiene columna con booleanos
+    let Tienecolumna2 estado x n =
+        let transpuesta  = List.transpose estado   
+        if not (List.contains x (List.item  (n) transpuesta )) then
+            
+            false
+        else
+            true
+
+
+
+
+
+    // funcion tiene columna subgrupo , hace un grupo de 3 *3 y verifica si esta ahi  verifica si esta en la columna
+    let Tienesubgrupo x y n (lst:int list list) =
+        [ for i in y..(y+2) ->
+            List.take 3 (List.skip x (List.item  i lst ))
+        ] 
+        |> List.concat
+        |>List.contains n
+    // funcion que imprime la lista del subgrupo
+    let Tienesubgrupo2 x y  (lst:int list list) =
+        [ for i in y..(y+2) ->
+            List.take 3 (List.skip x (List.item  i lst ))
+        ] 
+        |> List.concat
+        |> printfn "%A" 
+
+   
+        
+
+    
+
+    // funcion buscador verifica si hay elementos en la lista 
+    let Buscador n (matriz: int list list  ) =
+        for i in 0 .. List.length matriz - 1 do
+            for j in 0 .. List.length (List.item i matriz) - 1 do
+                printfn "El elemento %d,%d es %d" i j (List.item i (List.item j matriz))
+                Tienecolumna inicio  n j
+                Tienefila inicio n i
+                if (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz)then 
+                    printfn "true. %d %d " (3*((i)/3)) (3*((j)/3)) 
+                    Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz      
+                else 
+                    printfn "false.%d %d " (3*((i)/3)) (3*((j)/3)) 
+                    Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz
+
+    let BuscadorSimple i j  n (matriz: int list list  ) =
+        (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz ) &&  (Tienecolumna2 inicio  n j) && (Tienefila2 inicio  n j)
+
+    //funcion buscador booleano
+    let BuscadorCiclo  n (matriz: int list list  ) =
+        for i in 0 .. List.length matriz - 1 do
+            for j in 0 .. List.length (List.item i matriz) - 1 do
+                BuscadorSimple i j n matriz
+                
+                        
+
+
+    
+
+
+
+
+   
+(*
+let findFirstZeroIndex estado =
+     estado
+    |> List.mapi (fun i lst -> (i, lst))
+    |> List.tryPick (fun (i, lst) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun j -> (i, lst, j)))
+*)
+
+
+    let escribirNumero i j num estado =
+        estado
+        |> List.mapi (fun idx fila ->
+            if idx = i then
+                fila |> List.mapi (fun idx2 x -> if idx2 = j then num else x)
+            else fila)
+
+
+    let sucesor (i, j) accion (estado : estado) =
+            let escribirNumero i j num estado =
+                estado
+                |> List.mapi (fun idx fila ->
+                    if idx = i then
+                        fila |> List.mapi (fun idx2 x -> if idx2 = j then num else x)
+                    else fila)
+            match accion with
+            | Uno-> if (BuscadorSimple 1 i j estado)
+                        then Some (accion, escribirNumero i j 1 estado)
+                        else None
+            | Dos -> if (BuscadorSimple 2 i j estado)
+                        then Some (accion, escribirNumero i j 2 estado)
+                        else None
+            | Tres -> if (BuscadorSimple 3 i j estado)
+                        then Some (accion, escribirNumero i j 3 estado)
+                        else None
+            | Cuatro-> if (BuscadorSimple 4 i j estado)
+                        then Some (accion, escribirNumero i j 4 estado)
+                        else None
+            | Cinco -> if (BuscadorSimple 5 i j estado)
+                        then Some (accion, escribirNumero i j 5 estado)
+                        else None
+            | Seis -> if (BuscadorSimple 6 i j estado)
+                        then Some (accion, escribirNumero i j 6 estado)
+                        else None
+            | Siete-> if (BuscadorSimple 7 i j estado)
+                        then Some (accion, escribirNumero i j 7 estado)
+                        else None
+            | Ocho -> if (BuscadorSimple 8 i j estado)
+                        then Some (accion, escribirNumero i j 8 estado)
+                        else None
+            | Nueve  -> if (BuscadorSimple 9 i j estado)
+                        then Some (accion, escribirNumero i j 9 estado)
+                        else None
+
+    let findFirstZeroIndex estado =
+        match estado |> List.mapi (fun i lst -> (i, lst)) |> List.tryPick (fun (i, lst) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun j -> (i, j))) with
+        | Some (i, j) -> (i, j)
+        | None -> (-1, -1) 
+    
+    let sucesores estado =
+            let indices = findFirstZeroIndex estado
+            [
+                sucesor indices Uno estado
+                sucesor indices Dos estado
+                sucesor indices Tres estado
+                sucesor indices Cuatro estado
+                sucesor indices Cinco estado
+                sucesor indices Seis  estado
+                sucesor indices Siete  estado
+                sucesor indices Ocho  estado
+                sucesor indices Nueve estado
+            ]   |> List.choose id
+        
+     let problema estado = {
+        inicio = estado
+        sucesores = sucesores
+        meta = meta
+        costo = costo
+    }
+(*
+module sudoku =
+ type accion =
+        | Uno
+        | Dos
+        | Tres
+        | Cuatro 
+        | Cinco
+        | Seis
+        | Siete
+        | Ocho 
+        | Nueve
+    type estado = list<list<int>>
+    
+    let inicio =[[1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
+
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;0;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
+
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];]
+
+
+   
+
+
+
+
+    let meta estado =
+            List.exists (fun subList -> List.exists ((=) 0) subList) estado
+
+
+
+
+    // funcion tiene Fila, verifica si esta en la lista
+    let Tienefila estado x n  = 
+        if not (List.contains x (List.item  (n) estado )) then
+            printfn "El número %d no está en la fila %d." x n
+            //false
+        else
+            printfn "El número %d está en la fila %d." x n 
+            //true
+    // funcion tiene fila con booleanos
+    let Tienefila2 estado x n  = 
+        if not (List.contains x (List.item  (n) estado )) then
+            false
+        else
+            printfn "El número %d está en la fila %d." x n 
+            true
+
+
+
+
+    // funcion tiene columna, verifica si esta en la columna
+    let Tienecolumna estado x n =
+        let transpuesta  = List.transpose estado   
+        if not (List.contains x (List.item  (n) transpuesta )) then
+            printfn "El número %d no está en la columna %d." x n
+            //false
+        else
+            printfn "El número %d está en la columna %d." x n 
+            //true
+    // funcion tiene columna con booleanos
+    let Tienecolumna2 estado x n =
+        let transpuesta  = List.transpose estado   
+        if not (List.contains x (List.item  (n) transpuesta )) then
+            
+            false
+        else
+            true
+
+
+
+
+
+    // funcion tiene columna subgrupo , hace un grupo de 3 *3 y verifica si esta ahi  verifica si esta en la columna
+    let Tienesubgrupo x y n (lst:int list list) =
+        [ for i in y..(y+2) ->
+            List.take 3 (List.skip x (List.item  i lst ))
+        ] 
+        |> List.concat
+        |>List.contains n
+    // funcion que imprime la lista del subgrupo
+    let Tienesubgrupo2 x y  (lst:int list list) =
+        [ for i in y..(y+2) ->
+            List.take 3 (List.skip x (List.item  i lst ))
+        ] 
+        |> List.concat
+        |> printfn "%A" 
+
+    let ceros estado =
+        [ for i in 0..8 do
+            for j in 0..8 do
+                if estado = 0 then yield (i,j) ]
+        
+
+    
+
+    // funcion buscador verifica si hay elementos en la lista 
+    let Buscador n (matriz: int list list  ) =
+        for i in 0 .. List.length matriz - 1 do
+            for j in 0 .. List.length (List.item i matriz) - 1 do
+                printfn "El elemento %d,%d es %d" i j (List.item i (List.item j matriz))
+                Tienecolumna inicio  n j
+                Tienefila inicio n i
+                if (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz)then 
+                    printfn "true. %d %d " (3*((i)/3)) (3*((j)/3)) 
+                    Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz      
+                else 
+                    printfn "false.%d %d " (3*((i)/3)) (3*((j)/3)) 
+                    Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz
+
+    //funcion buscador booleano
+    let BuscadorCiclo  n (matriz: int list list  ) =
+        for i in 0 .. List.length matriz - 1 do
+            for j in 0 .. List.length (List.item i matriz) - 1 do
+                (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz ) &&  (Tienecolumna2 inicio  n j) && (Tienefila2 inicio  n j) 
+                        
+
+
+    let BuscadorSimple i j  n (matriz: int list list  ) =
+        (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz ) &&  (Tienecolumna2 inicio  n j) && (Tienefila2 inicio  n j)
+
+    let findFirstZeroIndex (listOfLists: int list list) =
+        listOfLists
+        |> List.tryPick (fun (lst: int list) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun i -> (lst, i)))
+
+
+
+
+    let meta estado =
+        List.map2 (fun x y -> (x,y)) goal estado
+        |> List.forall (fun (x,y) -> x = y)
+
+    let cero estado =
+        List.findIndex (fun x -> x = 0) estado
+
+    let sucesor i accion (estado : estado) =
+        let swap i j =
+            estado
+            |> List.mapi (fun indx x ->
+                    if indx = i then
+                        List.item j estado
+                    elif indx = j then
+                        List.item i estado
+                    else 
+                        x
+                )
+        match accion with
+        | Left -> if i % 3 <> 0
+                    then Some (accion, swap i (i-1))
+                    else None
+        | Right -> if i % 3 <> 2
+                    then Some (accion, swap i (i+1))
+                    else None
+        | Up -> if i > 2
+                    then Some (accion, swap i (i-3))
+                    else None
+        | Down -> if i < 6
+                    then Some (accion, swap i (i+3))
+                    else None
+    let sucesores estado =
+        let indice = cero estado
+        [
+            sucesor indice Left estado
+            sucesor indice Right estado
+            sucesor indice Up estado
+            sucesor indice Down estado
+        ]   |> List.choose id
+
+    let problema estado = {
+        inicio = estado
+        sucesores = sucesores
+        meta = meta
+        costo = costo
+    }
+
+    let h1 nodo = 
+        List.zip goal nodo.estado
+        |> List.sumBy (fun (x,y) -> if x <> y && x <> 0 then 1.0 else 0.0)
+
+        *  
     type accion =
         | Uno
         | Dos
@@ -11,71 +404,195 @@ module sudoku =
         | Siete
         | Ocho 
         | Nueve
+    type estado = list<list<int>>
     
-    type estado = list<list<int>*list<int>*list<int>*list<int>*list<int>*list<int>*list<int>*list<int>*list<int>>
+    let inicio =[[1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
 
-    let inicio =   [[0;0;0 ;0;0;0; 0;0;0],
-                    [0;0;0 ;0;0;0; 0;0;0],
-                    [0;0;0 ;0;0;0; 0;0;0],
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;0;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
 
-                    [0;0;0 ;0;0;0; 0;0;0],
-                    [0;0;0 ;0;0;0; 0;0;0],
-                    [0;0;0 ;0;0;0; 0;0;0],
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];
+                [1;2;3; 4;5;6; 7;8;9];]
 
-                    [0;0;0 ;0;0;0; 0;0;0],
-                    [0;0;0 ;0;0;0; 0;0;0],
-                    [0;0;0 ;0;0;0; 0;0;0]]
 
-    let goal = [    [1;2;3  ;4;5;6; 7;8;9],
-                    [4;5;6  ;7;8;9; 1;2;3],
-                    [7;8;9  ;1;2;3; 4;5;6],
+   
 
-                    [2;3;1 ;6;4;5; 9;7;8],
-                    [5;6;4 ;9;7;8; 3;1;2],
-                    [8;9;7 ;3;1;2; 6;4;5],
 
-                    [3;1;2 ;5;6;4; 8;9;7],
-                    [6;4;5 ;8;9;7; 2;3;1],
-                    [9;7;8 ;2;3;1; 5;6;4]]
+
 
     let meta estado =
-        List.map2(fun x y ->(x,y))
-            goal estado
-        |> List.forall(fun(x,y)->x=y)
+            List.exists (fun subList -> List.exists ((=) 0) subList) estado
 
-    let succesores (estado:estado)=
-        let indicesVacios = //comprueba si se encuentran valores 0 en alguna posicion de la lista
-            [ for i in 0..8 do
-                for j in 0..8 do
-                    if estado.[i].[j] = 0 then yield (i,j) ] //si encuentra un 0 regresa la pocicion donde se enontro el valor
 
-        let movimientosValidos (i,j)=//comprueba los valores validos para la posicion donde se encontraron 0 para ello se lleva la posicion de donde se encontro el 0
-            let fila = estado.[i]//a fila le asigna la fila de la posicion del 0
-            let columna = [ for k in 0..8 -> estado.[k].[j] ]
-            let subcuadricula = //asigna la cuadricula donde se encontro un 0
-                [ for k in [0..2] do
-                    for l in [0..2] do
-                        yield estado.[i/3*3+k].[j/3*3+l] ]//regresa la cuadricula
-        
-            [1..9]//secuencia de posibles valores
-                |> Seq.filter (fun num -> not (num |> List.contains fila))//revisa si se pueden asignar valores a la fila encontrada anteriormente dentro de una secuencia
-                |> Seq.filter (fun num -> not (num |> List.contains columna))//asoigna valores a la columna 
-                |> Seq.filter (fun num -> not (num |> List.contains subcuadricula))//asigna posibles valores a la cuadricula
-                |> Seq.toList//regresa la union de las secuencias anteriores
+
+
+    // funcion tiene Fila, verifica si esta en la lista
+    let Tienefila estado x n  = 
+        if not (List.contains x (List.item  (n) estado )) then
+            printfn "El número %d no está en la fila %d." x n
+            //false
+        else
+            printfn "El número %d está en la fila %d." x n 
+            //true
+    // funcion tiene fila con booleanos
+    let Tienefila2 estado x n  = 
+        if not (List.contains x (List.item  (n) estado )) then
+            false
+        else
+            printfn "El número %d está en la fila %d." x n 
+            true
+
+
+
+
+    // funcion tiene columna, verifica si esta en la columna
+    let Tienecolumna estado x n =
+        let transpuesta  = List.transpose estado   
+        if not (List.contains x (List.item  (n) transpuesta )) then
+            printfn "El número %d no está en la columna %d." x n
+            //false
+        else
+            printfn "El número %d está en la columna %d." x n 
+            //true
+    // funcion tiene columna con booleanos
+    let Tienecolumna2 estado x n =
+        let transpuesta  = List.transpose estado   
+        if not (List.contains x (List.item  (n) transpuesta )) then
             
-        [ for (i,j) in indicesVacios do//creara un tablero nuevo con los posibles valores apartir de donde se encontro el 0
-            [ for num in movimientosValidos (i,j) -> 
-                let nuevoTablero = 
-                    estado
-                    |> List.mapi (fun r fila -> 
-                        fila 
-                        |> List.mapi (fun c valor -> 
-                            if r=i && c=j then num else valor))
-                nuevoTablero ] ]
+            false
+        else
+            true
 
-    let problema estado = {
-        inicio = estado
-        sucesores = sucesores
-        meta = meta
-        costo = costo
-    }
+
+
+
+
+    // funcion tiene columna subgrupo , hace un grupo de 3 *3 y verifica si esta ahi  verifica si esta en la columna
+    let Tienesubgrupo x y n (lst:int list list) =
+        [ for i in y..(y+2) ->
+            List.take 3 (List.skip x (List.item  i lst ))
+        ] 
+        |> List.concat
+        |>List.contains n
+    // funcion que imprime la lista del subgrupo
+    let Tienesubgrupo2 x y  (lst:int list list) =
+        [ for i in y..(y+2) ->
+            List.take 3 (List.skip x (List.item  i lst ))
+        ] 
+        |> List.concat
+        |> printfn "%A" 
+
+   
+        
+
+    
+
+    // funcion buscador verifica si hay elementos en la lista 
+    let Buscador n (matriz: int list list  ) =
+        for i in 0 .. List.length matriz - 1 do
+            for j in 0 .. List.length (List.item i matriz) - 1 do
+                printfn "El elemento %d,%d es %d" i j (List.item i (List.item j matriz))
+                Tienecolumna inicio  n j
+                Tienefila inicio n i
+                if (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz)then 
+                    printfn "true. %d %d " (3*((i)/3)) (3*((j)/3)) 
+                    Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz      
+                else 
+                    printfn "false.%d %d " (3*((i)/3)) (3*((j)/3)) 
+                    Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz
+
+    let BuscadorSimple i j  n (matriz: int list list  ) =
+        (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz ) &&  (Tienecolumna2 inicio  n j) && (Tienefila2 inicio  n j)
+
+    //funcion buscador booleano
+    let BuscadorCiclo  n (matriz: int list list  ) =
+        for i in 0 .. List.length matriz - 1 do
+            for j in 0 .. List.length (List.item i matriz) - 1 do
+                BuscadorSimple i j n matriz
+                
+                        
+
+
+    
+
+
+
+
+   
+(*
+let findFirstZeroIndex estado =
+     estado
+    |> List.mapi (fun i lst -> (i, lst))
+    |> List.tryPick (fun (i, lst) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun j -> (i, lst, j)))
+*)
+
+
+let escribirNumero i j num estado =
+    estado
+    |> List.mapi (fun idx fila ->
+        if idx = i then
+            fila |> List.mapi (fun idx2 x -> if idx2 = j then num else x)
+        else fila)
+
+
+let sucesor (i, j) accion (estado : estado) =
+        let escribirNumero i j num estado =
+            estado
+            |> List.mapi (fun idx fila ->
+                if idx = i then
+                    fila |> List.mapi (fun idx2 x -> if idx2 = j then num else x)
+                else fila)
+        match accion with
+        | Uno-> if (BuscadorSimple 1 i j estado)
+                    then Some (accion, escribirNumero i j 1 estado)
+                    else None
+        | Dos -> if (BuscadorSimple 2 i j estado)
+                    then Some (accion, escribirNumero i j 2 estado)
+                    else None
+        | Tres -> if (BuscadorSimple 3 i j estado)
+                    then Some (accion, escribirNumero i j 3 estado)
+                    else None
+        | Cuatro-> if (BuscadorSimple 4 i j estado)
+                    then Some (accion, escribirNumero i j 4 estado)
+                    else None
+        | Cinco -> if (BuscadorSimple 5 i j estado)
+                    then Some (accion, escribirNumero i j 5 estado)
+                    else None
+        | Seis -> if (BuscadorSimple 6 i j estado)
+                    then Some (accion, escribirNumero i j 6 estado)
+                    else None
+        | Siete-> if (BuscadorSimple 7 i j estado)
+                    then Some (accion, escribirNumero i j 7 estado)
+                    else None
+        | Ocho -> if (BuscadorSimple 8 i j estado)
+                    then Some (accion, escribirNumero i j 8 estado)
+                    else None
+        | Nueve  -> if (BuscadorSimple 9 i j estado)
+                    then Some (accion, escribirNumero i j 9 estado)
+                    else None
+
+let findFirstZeroIndex estado =
+    match estado |> List.mapi (fun i lst -> (i, lst)) |> List.tryPick (fun (i, lst) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun j -> (i, j))) with
+    | Some (i, j) -> (i, j)
+    | None -> (-1, -1)
+ 
+let sucesores estado =
+        let indices = findFirstZeroIndex estado
+        [
+            sucesor indices Uno estado
+            sucesor indices Dos estado
+            sucesor indices Tres estado
+            sucesor indices Cuatro estado
+            sucesor indices Cinco estado
+            sucesor indices Seis  estado
+            sucesor indices Siete  estado
+            sucesor indices Ocho  estado
+            sucesor indices Nueve estado
+        ]   |> List.choose id
+ 
+
+*)
