@@ -1,43 +1,43 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\usre\\Downloads\\IA\\IA\\IA.fsproj": {}
+    "C:\\IA\\IA\\IA.fsproj": {}
   },
   "projects": {
-    "C:\\Users\\usre\\Downloads\\IA\\IA\\IA.fsproj": {
+    "C:\\IA\\IA\\IA.fsproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\usre\\Downloads\\IA\\IA\\IA.fsproj",
+        "projectUniqueName": "C:\\IA\\IA\\IA.fsproj",
         "projectName": "IA",
-        "projectPath": "C:\\Users\\usre\\Downloads\\IA\\IA\\IA.fsproj",
-        "packagesPath": "C:\\Users\\usre\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\usre\\Downloads\\IA\\IA\\obj\\",
+        "projectPath": "C:\\IA\\IA\\IA.fsproj",
+        "packagesPath": "C:\\Users\\lupis\\.nuget\\packages\\",
+        "outputPath": "C:\\IA\\IA\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\usre\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\lupis\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net6.0"
+          "net7.0"
         ],
         "sources": {
-          "C:\\Program Files\\dotnet\\sdk\\6.0.407\\FSharp\\library-packs": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.202\\FSharp\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net6.0": {
-            "targetAlias": "net6.0",
+          "net7.0": {
+            "targetAlias": "net7.0",
             "projectReferences": {}
           }
         }
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net7.0": {
+          "targetAlias": "net7.0",
           "dependencies": {
             "FSharp.Core": {
               "include": "Runtime, Compile, Build, Native, Analyzers, BuildTransitive",
               "target": "Package",
-              "version": "[6.0.7, )",
+              "version": "[7.0.200, )",
               "generatePathProperty": true
             }
           },
@@ -57,7 +57,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.407\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "Q6Km5jNQxHDM6obs68jbQHb7Y3InlJhcYAhdks4AG1wBVJ/AvHoBKsHIjjDH6uBVn2GoR8/1OYY3T1m2fgEe0w==",
+  "dgSpecHash": "TEKBT0S4JRJaHzOKHqe89J/aAHHcOL/tVjg9zQkgze8gL0arxtmxgE+TZ/iKtC3IYOm96eB5IE83f80ryeomeg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\usre\\Downloads\\IA\\IA\\IA.fsproj",
+  "projectFilePath": "C:\\IA\\IA\\IA.fsproj",
   "expectedPackageFiles": [
-    "C:\\Users\\usre\\.nuget\\packages\\fsharp.core\\6.0.7\\fsharp.core.6.0.7.nupkg.sha512"
+    "C:\\Users\\lupis\\.nuget\\packages\\fsharp.core\\7.0.200\\fsharp.core.7.0.200.nupkg.sha512"
   ],
   "logs": []
 }
