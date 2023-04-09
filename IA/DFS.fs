@@ -3,7 +3,7 @@ namespace busqueda
 module DFS =
      open Pila
 
-     let estrategia l =
+     let estrategia  =
       {
          vacia = empty 
          insertar = push 

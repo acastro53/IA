@@ -26,6 +26,7 @@ module sudoku =
             not List.exists (fun subList - > List.exists ((=) 0) subList) estado 
     *)
     let meta estado =
+    
         not (List.exists (fun subList -> List.exists ((=) 0) subList) estado)
            
 
@@ -120,7 +121,7 @@ module sudoku =
                     Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz
 
     let BuscadorSimple i j  n (matriz: int list list  ) =
-        ((not (Tienesubgrupo (3*((i)/3)) (3*((j)/3)) n matriz )) &&   (Tienecolumna2 matriz n j) && (Tienefila2 matriz  n j))
+        ((not (Tienesubgrupo (3*((j)/3)) (3*((i)/3)) n matriz )) &&   (Tienecolumna2 matriz n j) && (Tienefila2 matriz  n i))
 
     //funcion buscador booleano
     let BuscadorCiclo  n (matriz: int list list  ) =
