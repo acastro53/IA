@@ -14,17 +14,28 @@ let estado = [
 let key n = n.estado 
 let t0=System.DateTime.UtcNow //registra el tiempo actual
 
+let printSudoku (nodofinal: int list list) =
+    for i in [0..8] do
+        if i % 3 = 0 && i <> 0 then printfn "------+-------+------"
+        for j in [0..8] do
+            if j % 3 = 0 && j <> 0 then printf "| "
+            printf "%d " nodofinal.[i].[j]
+        printfn ""
+
 let dip = 999999999
 match Capitulo3.busquedaGrafo key BFS.estrategia (sudoku.problema estado) with
 | Some n -> let sol = Capitulo3.acciones n
             printfn "solucion : %A" sol
-            printfn ":solucion matriz %A" n.estado
+            printf "Entrada :\n"
+            printSudoku estado
+            printf "Solucion:\n"
+            printSudoku n.estado
 | None -> printfn "no hay solucion"
 
 
 let delta=System.DateTime.UtcNow - t0
 printf "Tiempo trascurrido %A "delta
-
+printf "Numero de nodos: %d" Sudoku.contadorNodo
 (*
 
         
