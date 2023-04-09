@@ -26,7 +26,7 @@ module sudoku =
             not List.exists (fun subList - > List.exists ((=) 0) subList) estado 
     *)
     let meta estado =
-    
+        
         not (List.exists (fun subList -> List.exists ((=) 0) subList) estado)
            
 
