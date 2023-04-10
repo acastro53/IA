@@ -22,9 +22,9 @@ let printSudoku (nodofinal: int list list) =
             printf "%d " nodofinal.[i].[j]
         printfn ""
 
-let rec NewtonRaphson (N:float, K:float, b:float) =
-    let f = b**(K+1.0) + b*(1.0 - float(N)) - 1.0
-    let f_prime = (K+1.0)*b**(K) - float(N)
+let rec NewtonRaphson (N:int, K:int, b:float) =
+    let f = pown b (K+1)(*b**(K+1.0)*) + b*(1.0 - float(N)) - 1.0
+    let f_prime = float(K+1) * (pown b (K))(*b**(K)*) - float(N)
     let b_prime = b - f/f_prime
     if abs(b_prime - b) < 0.00001 then b_prime
     else NewtonRaphson(N, K, b_prime)
@@ -34,7 +34,7 @@ let dip = 999999999
 match Capitulo3.busquedaGrafo key BFS.estrategia (sudoku.problema estado) with
 | Some n -> let sol = Capitulo3.acciones n
             let N=Sudoku.contadorNodo//es int
-            let ramPro=NewtonRaphson ((float N) (float (Seq.length sol)) 1.0)//n y Seq.length se cambian a flotante
+            let ramPro=NewtonRaphson (Seq.length sol,N, 1.0)
             printfn "solucion : %A" sol
             printf "Entrada :\n"
             printSudoku estado
