@@ -73,7 +73,7 @@ module sudoku =
             printfn "El número %d está en la columna %d." x n
             false
 
-
+//funcion verifica si el numero esta dentro del area 
      let Tienesubgrupo2 x y n (lst:int list list) =
         [ for i in y..(y+2) ->
             List.take 3 (List.skip x (List.item  i lst ))
@@ -106,7 +106,7 @@ module sudoku =
 
     
 
-    // funcion buscador verifica si hay elementos en la lista 
+    // funcion buscador verifica si hay  elemento n  en la lista 
     let Buscador n (matriz: int list list  ) =
         for i in 0 .. List.length matriz - 1 do
             for j in 0 .. List.length (List.item i matriz) - 1 do
@@ -121,9 +121,8 @@ module sudoku =
                     Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz
 
     let BuscadorSimple i j  n (matriz: int list list  ) =
-        let result=((not (Tienesubgrupo (3*((j)/3)) (3*((i)/3)) n matriz )) &&   (Tienecolumna2 matriz n j) && (Tienefila2 matriz  n i))
-        if result then contadorNodo <- contadorNodo + 1
-        result
+        ((not (Tienesubgrupo (3*((j)/3)) (3*((i)/3)) n matriz )) &&   (Tienecolumna2 matriz n j) && (Tienefila2 matriz  n i))
+
     //funcion buscador booleano
     let BuscadorCiclo  n (matriz: int list list  ) =
         for i in 0 .. List.length matriz - 1 do
@@ -146,7 +145,7 @@ let findFirstZeroIndex estado =
     |> List.tryPick (fun (i, lst) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun j -> (i, lst, j)))
 *)
 
-
+//funcion que escribe los numero dadas las coordenadas i y j el numero
     let escribirNumero i j num estado =
         estado
         |> List.mapi (fun idx fila ->
@@ -160,7 +159,7 @@ let findFirstZeroIndex estado =
     
 
 
-    let sucesor (i, j) accion (estado : estado) =
+    let sucesor (i, j) accion (estado : estado) =          //Funcion sucesora, hace un nodo por cada posibilidad legal que exi
             let escribirNumero i j num estado =
                 estado
                 |> List.mapi (fun idx fila ->
@@ -197,12 +196,12 @@ let findFirstZeroIndex estado =
                         then Some (accion, escribirNumero i j 9 estado ) 
                         else None
 
-    let findFirstZeroIndex estado =
+    let findFirstZeroIndex estado = // funcion para buscar las casillas con 0 implementada en la funcion sucesora
         match estado |> List.mapi (fun i lst -> (i, lst)) |> List.tryPick (fun (i, lst) -> List.tryFindIndex ((=) 0) lst |> Option.map (fun j -> (i, j))) with
         | Some (i, j) -> (i, j)
         | None -> (-1, -1) 
     
-    let sucesores estado =
+    let sucesores estado = 
             let indices = findFirstZeroIndex estado
             [
                 sucesor indices Uno estado
@@ -216,7 +215,7 @@ let findFirstZeroIndex estado =
                 sucesor indices Nueve estado
             ]   |> List.choose id
         
-     let problema estado = {
+     let problema estado = { //definicion del problema 
         inicio = estado
         sucesores = sucesores
         meta = meta
