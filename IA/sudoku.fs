@@ -121,8 +121,9 @@ module sudoku =
                     Tienesubgrupo2 (3*((i)/3)) (3*((j)/3))  matriz
 
     let BuscadorSimple i j  n (matriz: int list list  ) =
-        ((not (Tienesubgrupo (3*((j)/3)) (3*((i)/3)) n matriz )) &&   (Tienecolumna2 matriz n j) && (Tienefila2 matriz  n i))
-
+        let result=((not (Tienesubgrupo (3*((j)/3)) (3*((i)/3)) n matriz )) &&   (Tienecolumna2 matriz n j) && (Tienefila2 matriz  n i))
+        if result then contadorNodo <- contadorNodo + 1
+        result
     //funcion buscador booleano
     let BuscadorCiclo  n (matriz: int list list  ) =
         for i in 0 .. List.length matriz - 1 do
